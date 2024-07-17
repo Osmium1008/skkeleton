@@ -1,3 +1,16 @@
+---@alias SkkeletonEncode
+---| "utf-32" #UTF-32
+---| "utf-16" #UTF-16
+---| "utf-16be" #UTF-16(big-endian)
+---| "utf-16le" #UTF-16(little-endian)
+---| "binary" #Binary
+---| "ascii" #ASCII
+---| "JIS" #JISコード(ISO-2022-JP?)
+---| "utf-8" #UTF-8
+---| "euc-jp" #EUC-JP
+---| "sjis" #Shift-JIS
+---| "unicode" #UNICODE
+
 ---@alias SkkeletonMode
 ---| "hira" #ひらがな
 ---| "kana" #カタカナ
@@ -65,9 +78,8 @@
 ---@field showCandidatesCount? integer このオプションの回数まで候補選択画面を表示せずに変換がされます。
 ---@field skkServerHost? string 辞書サーバーのホスト名もしくはIPアドレスを指定します。
 ---@field skkServerPort? integer 辞書サーバーのポート番号を指定します。
----@field skkServerReqEnc? string 辞書サーバーに渡す文字列のエンコード形式を指定します。
----@field skkServerResEnc? string 辞書サーバーから受け取る文字列のエンコード形式を指定します。
+---@field skkServerReqEnc? SkkeletonEncode 辞書サーバーに渡す文字列のエンコード形式を指定します。
+---@field skkServerResEnc? SkkeletonEncode 辞書サーバーから受け取る文字列のエンコード形式を指定します。
 ---@field sources? ("skk_dictionary"|"skk_server"|"deno_kv"|"google_japanese_input")[] 使用する入力ソースとその優先順位を指定します。
 ---@field usePopup? boolean 有効にした場合、変換候補がポップアップ表示されます。
----@field useSkkServer? boolean 辞書サーバー機能を有効にするか選択します。
 ---@field userDictionary? string ユーザー辞書の保存場所を指定します。
