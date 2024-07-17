@@ -1,0 +1,85 @@
+---@alias SkkeletonEncode
+---| "utf-32" #UTF-32
+---| "utf-16" #UTF-16
+---| "utf-16be" #UTF-16(big-endian)
+---| "utf-16le" #UTF-16(little-endian)
+---| "binary" #Binary
+---| "ascii" #ASCII
+---| "JIS" #JISコード(ISO-2022-JP?)
+---| "utf-8" #UTF-8
+---| "euc-jp" #EUC-JP
+---| "sjis" #Shift-JIS
+---| "unicode" #UNICODE
+
+---@alias SkkeletonMode
+---| "hira" #ひらがな
+---| "kana" #カタカナ
+---| "hankata" #半角カタカナ
+---| "zenkaku" #全角英数
+---| "abbrev" #abbrev
+---| "" #disabled
+
+---@alias SkkeletonPhase
+---| "input" #直接入力
+---| "input:okurinasi" #送りなし入力
+---| "input:okuriari" #送りあり入力
+---| "henkan" #変換
+---| "escape" #Escape後
+---| "" #disabled
+
+---@class SkkeletonState
+---@field phase SkkeletonPhase
+
+---@alias SkkeletonKanatableVal SkkeletonFunction|string[]|false
+---@alias SkkeletonKanatable { [string]: SkkeletonKanatableVal }
+
+---@alias SkkeletonFunction
+---| "kakutei" #入力中や変換中の文字列を確定します。
+---| "newline" #現在の入力を確定し改行します。
+---| "cancel" #現在の入力をキャンセルします。
+---| "disable" #skkeletonを無効化します。
+---| "escape" #挿入モードもしくはコマンドラインモードから抜けます。
+---| "henkanFirst" #変換を開始します。
+---| "henkanForward" #変換候補を次に進めます。
+---| "henkanBackward" #変換候補を前に戻します。戻りきった際は入力モードへ戻ります。
+---| "purgeCandidate" #選択中の変換候補をユーザー辞書から削除します。
+---| "henkanInput" #変換候補を確定して文字を入力します。
+---| "kakuteiFeed" #直接入力時に入力が確定できる場合、確定します。
+---| "henkanPoint" #変換ポイントを設定します。
+---| "deleteChar" #入力を1文字削除します。変換モードで実行すると入力モードへ戻ります。
+---| "katakana" #カタカナモードに入ります。変換モードではカタカナへの変換を実行します。
+---| "hankatakana" #半角カタカナモードに入ります。変換モードでは半角カタカナへの変換を実行します。
+---| "zenkaku" #全角英数モードに入ります。
+---| "abbrev" #abbrevモードに入ります。
+---| "prefix" #接頭辞の入力を開始します。開始できない場合何もマッピングされていないように振る舞います。
+---| "suffix" #接尾辞の入力を開始します。
+---| "" #キーマップを削除します。
+---| false #キーマップを削除します。
+
+---@class SkkeletonOption
+---@field acceptIllegalResult? boolean 有効にした場合、入力に失敗したローマ字がバッファに残るようになります。
+---@field completionRankFile? string パスを指定すると補完候補の順番を記録するようになります。
+---@field databasePath? string パスを指定するとDeno KVを使って辞書をデータベース化するようになります。
+---@field debug? boolean 有効にした場合、デバッグログが出力されるようになります。
+---@field eggLikeNewline? boolean 有効にした場合、変換モードで改行キーを押した際確定のみを行うようになります。
+---@field globalDictionaries? (string|string[])[] グローバル辞書のパス(とエンコーディング)を指定します。
+---@field globalKanaTableFiles? (string|string[])[] カナ変換テーブルのパス(とエンコーディング)を指定します。
+---@field immediatelyCancel? boolean 有効にした場合、変換候補選択で|skkeleton-functions-cancel|使用時に未入力状態まで戻ります。
+---@field immediatelyDictionaryRW? boolean 有効にした場合、変換や確定の度にユーザー辞書を更新するようになります。
+---@field immediatelyOkuriConvert? boolean 有効にした場合、送りあり変換にて「っ」で変換を開始するようになります。
+---@field kanaTable? string 使用するカナ変換テーブル(既存のテーブルのみ)を指定します。
+---@field keepMode? boolean 有効にした場合、skkeleton無効化後も前回のモードを保持するようになります。
+---@field keepState? boolean 有効にした場合、Insertモードを抜けた後も前回の状態を保持するようになります。
+---@field markerHenkan? string 変換入力中であることを示す文字を指定します。
+---@field markerHenkanSelect? string 変換候補選択中であることを示す文字を指定します。
+---@field registerConvertResult? boolean 有効にした場合、カタカナ変換等の結果をユーザー辞書に登録するようになります。
+---@field selectCandidateKeys? string 候補選択時に使用する7つの英字キーを指定します。xは使用できません。
+---@field setUndoPoint? boolean 有効にした場合、変換や確定が行われる際にアンドゥポイントを切るようになります。
+---@field showCandidatesCount? integer このオプションの回数まで候補選択画面を表示せずに変換がされます。
+---@field skkServerHost? string 辞書サーバーのホスト名もしくはIPアドレスを指定します。
+---@field skkServerPort? integer 辞書サーバーのポート番号を指定します。
+---@field skkServerReqEnc? SkkeletonEncode 辞書サーバーに渡す文字列のエンコード形式を指定します。
+---@field skkServerResEnc? SkkeletonEncode 辞書サーバーから受け取る文字列のエンコード形式を指定します。
+---@field sources? ("skk_dictionary"|"skk_server"|"deno_kv"|"google_japanese_input")[] 使用する入力ソースとその優先順位を指定します。
+---@field usePopup? boolean 有効にした場合、変換候補がポップアップ表示されます。
+---@field userDictionary? string ユーザー辞書の保存場所を指定します。
