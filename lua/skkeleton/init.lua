@@ -58,6 +58,7 @@ function M.register_keymap(state, key, func_name)
     vim.fn["skkeleton#register_keymap"](state, key, func_name)
 end
 
+---@param opts SkkeletonOption
 function M.setup(opts)
     vim.fn["skkeleton#config"](opts)
 end
