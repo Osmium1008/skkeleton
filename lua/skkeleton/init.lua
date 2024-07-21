@@ -77,11 +77,4 @@ function M.config(opts)
     vim.fn["skkeleton#config"](opts)
 end
 
----\|skkeleton-config|にて示されるキー(省略可能)からなる辞書型オブジェクトを渡すことでskkeletonの設定を変更できます。
----現状入力ソースの設定またはグローバル辞書の指定は必須です。
----@param opts SkkeletonOption
-function M.setup(opts)
-    vim.fn["skkeleton#config"](opts)
-end
-
 return M
